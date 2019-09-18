@@ -1,0 +1,16 @@
+{
+    "name": "mqtt-demo",
+    "entry": "index.js",
+    "desc": "a mqtt demo app",
+    "type": "user",
+    "lang": "javascript",
+    "version": "0.0.1",
+    "autorun": 0,
+    "priority": 90,
+    "settings": {
+        "host": "127.0.0.1",
+        "topic": "samzon",
+        "qos": 0,
+        "retain": true
+    }
+}

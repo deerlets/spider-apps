@@ -1,0 +1,11 @@
+{
+    "id": "4dd9ac49-90be-4816-9505-40b4693ae7a4",
+    "name": "slave-emulator",
+    "entry": "slave-emulator",
+    "desc": "a slave emulator app",
+    "type": "user",
+    "lang": "c/c++",
+    "version": "0.0.1",
+    "autorun": 1,
+    "priority": 90
+}

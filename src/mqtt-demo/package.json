@@ -1,0 +1,17 @@
+{
+  "name": "mqtt-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_PATH=/usr/local/lib/node_modules node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "yonzkon@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "bonfire-addon": "^1.0.1",
+    "mqtt": "^3.0.0",
+    "yargs": "^14.0.0"
+  }
+}
