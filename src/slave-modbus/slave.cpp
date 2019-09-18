@@ -23,7 +23,6 @@ static pid_t ppid;
 static string app_json_file;
 static string address;
 static string credential;
-static json cache;
 
 struct channel {
 	string id;

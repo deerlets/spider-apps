@@ -27,8 +27,6 @@ static struct param_desc channel_desc[] = {
 	INIT_PD_SELECT("type", "通道类型", NULL, "net serial", "net"),
 	INIT_PD_TCP("type=net", 5200, 1000),
 	INIT_PD_SERIAL("type=serial"),
-	INIT_PD_NUMBER("cycle", "采集周期(秒)", NULL, 10, 1, 3600),
-	INIT_PD_NUMBER("easter_egg", "彩蛋", "port=18339", 11, 11, 121),
 	INIT_PD_NONE(),
 };
 
