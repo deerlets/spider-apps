@@ -1,0 +1,14 @@
+disable-rules:
+  - GotoStatement
+  - UselessParentheses
+  - EmptyIfStatement
+  - UnusedMethodParameter
+  - InvertedLogic
+  - BitwiseOperatorInConditional
+rule-configurations:
+  - key: CYCLOMATIC_COMPLEXITY
+    value: 10
+  - key: LONG_LINE
+    value: 85
+  - key: SHORT_VARIABLE_NAME
+    value: 1

@@ -1,0 +1,11 @@
+{
+    "id": "0f4f7370-952d-4f74-993b-a9713264bcad",
+    "name": "slave-modbus",
+    "entry": "slave-modbus",
+    "desc": "a slave modbus app",
+    "type": "user",
+    "lang": "c/c++",
+    "version": "0.0.1",
+    "autorun": 1,
+    "priority": 90
+}
