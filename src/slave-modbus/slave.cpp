@@ -26,20 +26,32 @@ static string credential;
 
 struct channel {
 	string id;
+
+	string type;
+
+	// tcp
 	string ipaddr;
 	int port;
-	int modbus_slave_id;
 	long timeout;
+
+	// rtu
+	int com;
+	int baud_rate;
+	int parity;
+	int data_bit;
+	int stop_bit;
+	int modbus_slave_id;
+
 	modbus_t *conn;
 };
 static std::map<string, struct channel> channels;
 
 static struct param_desc channel_desc[] = {
 	INIT_PD_SELECT("type", "通道类型", NULL, "tcp rtu", "tcp"),
-	INIT_PD_TCP("type=tcp", 502, 3000),
+	INIT_PD_TCP("type=tcp", 502),
 	INIT_PD_SERIAL("type=rtu"),
-	INIT_PD_NUMBER("modbus_slave_id", "站号", NULL, 1, 1, 32),
-	INIT_PD_NUMBER("timeout", "通讯超时/ms", NULL, 200, 0, INT_MAX),
+	INIT_PD_NUMBER("modbus_slave_id", "站号", "type=rtu", 1, 1, 32),
+	INIT_PD_NUMBER("timeout", "超时时间", NULL, 1000, 100, 3000),
 	INIT_PD_NONE(),
 };
 
@@ -74,20 +86,47 @@ static int on_channel_create(const char *id, const char *param)
 	try {
 		json j = json::parse(param);
 		chn.id = id;
-		chn.ipaddr = j["ipaddr"];
-		chn.port = j["port"];
-		chn.modbus_slave_id = j["modbus_slave_id"];
+		chn.type = j["type"];
 		chn.timeout = j["timeout"];
+		if (chn.type == "tcp") {
+			chn.ipaddr = j["ipaddr"];
+			chn.port = j["port"];
+		} else if (chn.type == "rtu") {
+			chn.com = atoi(j["com"].get<string>().c_str());
+			chn.baud_rate = atoi(j["baud_rate"].get<string>().c_str());
+			chn.parity = atoi(j["parity_bit"].get<string>().c_str());
+			chn.data_bit = atoi(j["data_bit"].get<string>().c_str());
+			chn.stop_bit = atoi(j["stop_bit"].get<string>().c_str());
+			chn.modbus_slave_id = j["modbus_slave_id"];
+		} else {
+			return -1;
+		}
 	} catch (json::exception &ex) {
 		return -1;
 	}
 
-	chn.conn = modbus_new_tcp(chn.ipaddr.c_str(), chn.port);
-	assert(modbus_set_slave(chn.conn, chn.modbus_slave_id) == 0);
+	if (chn.type == "tcp") {
+		chn.conn = modbus_new_tcp(chn.ipaddr.c_str(), chn.port);
+	} else {
+		char com_name[32] = {0};
+#ifdef __CYGWIN__
+		sprintf(com_name, "COM%d", chn.com);
+#else
+		sprintf(com_name, "/dev/ttyS%d", chn.com);
+#endif
+		chn.conn = modbus_new_rtu(com_name,
+		                          chn.baud_rate,
+		                          chn.parity,
+		                          chn.data_bit,
+		                          chn.stop_bit);
+		assert(modbus_set_slave(chn.conn, chn.modbus_slave_id) == 0);
+	}
 	assert(modbus_set_response_timeout(chn.conn, chn.timeout / 1000,
 	                                   (chn.timeout % 1000) * 1000) == 0);
-	assert(modbus_set_byte_timeout(chn.conn, 0, 15 * 1000) == 0);
+	assert(modbus_set_byte_timeout(chn.conn, chn.timeout / 1000,
+	                               (chn.timeout % 1000) * 1000) == 0);
 	if (modbus_connect(chn.conn) == -1) {
+		fprintf(stderr, "[modbus]: %s\n", modbus_strerror(errno));
 		modbus_close(chn.conn);
 		modbus_free(chn.conn);
 		return -1;
@@ -187,14 +226,17 @@ static int on_point_read(const char *channel_id, const char *param,
 			conn, address, quantity, (uint16_t *)buf);
 	} else {
 		//modbus_rtu_unlock(conn);
-		fprintf(stderr, "function_code[%d] is error", function_code);
+		fprintf(stderr, "[modbus]: error function_code [%d]\n",
+		        function_code);
 		return -1;
 	}
 	//modbus_rtu_unlock(conn);
 	if (rc == -1) {
+		fprintf(stderr, "[modbus]: %s\n", modbus_strerror(errno));
 		modbus_close(conn);
-		if (modbus_connect(conn) == -1)
-			fprintf(stderr, "connect failed\n");
+		if (modbus_connect(conn) == -1) {
+			fprintf(stderr, "[modbus]: %s\n", modbus_strerror(errno));
+		}
 		free(buf);
 		return -1;
 	}
@@ -296,7 +338,7 @@ static int parse_option(int argc, char *argv[])
 		}
 
 	if (app_json_file.empty() || address.empty() || credential.empty()) {
-		fprintf(stderr, "slave_emulator: Invalid arguments\n");
+		fprintf(stderr, "[modbus]: Invalid arguments\n");
 		for (int i = 0; i < argc; i++)
 			fprintf(stderr, "%d: %s\n", i, argv[i]);
 		abort();
