@@ -64,7 +64,7 @@ static struct param_desc point_desc[] = {
 	               "15(写多个线圈) 16(写多个保持寄存器)",
 	               "3(读保持寄存器)"),
 	INIT_PD_SELECT("value_type", "数据类型", NULL,
-	               "1(整型) 2(有符号整型) 3(字符串) 4(浮点数)",
+	               "1(整型) 2(无符号整型) 3(字符串) 4(浮点数)",
 	               "1(整型)"),
 	INIT_PD_NONE(),
 };
@@ -245,22 +245,22 @@ static int on_point_read(const char *channel_id, const char *param,
 
 	if (1 == value_type) {
 		if (buf_size == 2)
-			cnt["value"] = *(unsigned short *)buf;
+			cnt["value"] = *(short *)buf;
 		else if (buf_size == 4)
-			cnt["value"] = *(unsigned int *)buf;
+			cnt["value"] = *(int *)buf;
 		else if (buf_size == 8)
-			cnt["value"] = *(unsigned long *)buf;
+			cnt["value"] = *(long *)buf;
 		else {
 			free(buf);
 			return -1;
 		}
 	} else if (2 == value_type) {
 		if (buf_size == 2)
-			cnt["value"] = *(short *)buf;
+			cnt["value"] = *(unsigned short *)buf;
 		else if (buf_size == 4)
-			cnt["value"] = *(int *)buf;
+			cnt["value"] = *(unsigned int *)buf;
 		else if (buf_size == 8)
-			cnt["value"] = *(long *)buf;
+			cnt["value"] = *(unsigned long *)buf;
 		else {
 			free(buf);
 			return -1;
