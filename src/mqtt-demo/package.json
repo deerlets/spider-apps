@@ -10,7 +10,7 @@
   "author": "yonzkon@gmail.com",
   "license": "ISC",
   "dependencies": {
-    "bonfire-addon": "^1.0.1",
+    "bonfire-addon": "^1.0.2",
     "mqtt": "^3.0.0",
     "yargs": "^14.0.0"
   }
