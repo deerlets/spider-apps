@@ -50,7 +50,7 @@ static struct param_desc channel_desc[] = {
 	INIT_PD_SELECT("type", "通道类型", NULL, "tcp rtu", "tcp"),
 	INIT_PD_TCP("type=tcp", 502),
 	INIT_PD_SERIAL("type=rtu"),
-	INIT_PD_NUMBER("modbus_slave_id", "站号", "type=rtu", 1, 1, 32),
+	INIT_PD_NUMBER("modbus_slave_id", "站号", NULL, 1, 1, 32),
 	INIT_PD_NUMBER("timeout", "超时时间", NULL, 1000, 100, 3000),
 	INIT_PD_NONE(),
 };
@@ -87,6 +87,7 @@ static int on_channel_create(const char *id, const char *param)
 		json j = json::parse(param);
 		chn.id = id;
 		chn.type = j["type"];
+		chn.modbus_slave_id = j["modbus_slave_id"];
 		chn.timeout = j["timeout"];
 		if (chn.type == "tcp") {
 			chn.ipaddr = j["ipaddr"];
@@ -97,7 +98,6 @@ static int on_channel_create(const char *id, const char *param)
 			chn.parity = atoi(j["parity_bit"].get<string>().c_str());
 			chn.data_bit = atoi(j["data_bit"].get<string>().c_str());
 			chn.stop_bit = atoi(j["stop_bit"].get<string>().c_str());
-			chn.modbus_slave_id = j["modbus_slave_id"];
 		} else {
 			return -1;
 		}
@@ -119,8 +119,8 @@ static int on_channel_create(const char *id, const char *param)
 		                          chn.parity,
 		                          chn.data_bit,
 		                          chn.stop_bit);
-		assert(modbus_set_slave(chn.conn, chn.modbus_slave_id) == 0);
 	}
+	assert(modbus_set_slave(chn.conn, chn.modbus_slave_id) == 0);
 	assert(modbus_set_response_timeout(chn.conn, chn.timeout / 1000,
 	                                   (chn.timeout % 1000) * 1000) == 0);
 	assert(modbus_set_byte_timeout(chn.conn, chn.timeout / 1000,
