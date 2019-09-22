@@ -37,7 +37,7 @@ struct channel {
 	// rtu
 	int com;
 	int baud_rate;
-	int parity;
+	string parity;
 	int data_bit;
 	int stop_bit;
 	int modbus_slave_id;
@@ -95,7 +95,7 @@ static int on_channel_create(const char *id, const char *param)
 		} else if (chn.type == "rtu") {
 			chn.com = atoi(j["com"].get<string>().c_str());
 			chn.baud_rate = atoi(j["baud_rate"].get<string>().c_str());
-			chn.parity = atoi(j["parity_bit"].get<string>().c_str());
+			chn.parity = j["parity"];
 			chn.data_bit = atoi(j["data_bit"].get<string>().c_str());
 			chn.stop_bit = atoi(j["stop_bit"].get<string>().c_str());
 		} else {
@@ -116,7 +116,7 @@ static int on_channel_create(const char *id, const char *param)
 #endif
 		chn.conn = modbus_new_rtu(com_name,
 		                          chn.baud_rate,
-		                          chn.parity,
+		                          chn.parity.c_str()[0],
 		                          chn.data_bit,
 		                          chn.stop_bit);
 	}
