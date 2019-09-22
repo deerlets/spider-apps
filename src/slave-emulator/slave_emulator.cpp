@@ -25,7 +25,7 @@ static json cache;
 
 static struct param_desc channel_desc[] = {
 	INIT_PD_SELECT("type", "通道类型", NULL, "net serial", "net"),
-	INIT_PD_TCP("type=net", 5200, 1000),
+	INIT_PD_TCP("type=net", 5200),
 	INIT_PD_SERIAL("type=serial"),
 	INIT_PD_NONE(),
 };
