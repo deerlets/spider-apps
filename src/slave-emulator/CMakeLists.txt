@@ -5,7 +5,7 @@ file(GLOB INC *.h)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/apps/slave-emulator)
 add_executable(slave-emulator ${SRC})
-target_link_libraries(slave-emulator spider-slave)
+target_link_libraries(slave-emulator spider)
 
 add_custom_command(TARGET slave-emulator
     POST_BUILD

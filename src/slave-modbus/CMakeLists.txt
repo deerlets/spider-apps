@@ -5,7 +5,7 @@ file(GLOB INC *.h)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/apps/slave-modbus)
 add_executable(slave-modbus ${SRC})
-target_link_libraries(slave-modbus spider-slave modbus)
+target_link_libraries(slave-modbus spider modbus)
 
 add_custom_command(TARGET slave-modbus
     POST_BUILD
