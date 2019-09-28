@@ -157,6 +157,15 @@ static void update_cache()
 		cache["inc"]["percent"]["3"].get<double>() + rand()%13*0.0001);
 	cache["inc"]["percent"]["4"] = trim_integer(
 		cache["inc"]["percent"]["4"].get<double>() + rand()%21*0.0001);
+
+	static int direct = 1;
+
+	direct = 0 - direct;
+	cache["wave"]["0"] = cache["wave"]["0"].get<int>() + rand() % 3 * direct;
+	cache["wave"]["1"] = cache["wave"]["1"].get<int>() + rand() % 3 * direct;
+	cache["wave"]["2"] = cache["wave"]["2"].get<int>() + rand() % 5 * direct;
+	cache["wave"]["3"] = cache["wave"]["3"].get<int>() + rand() % 5 * direct;
+	cache["wave"]["4"] = cache["wave"]["4"].get<int>() + rand() % 8 * direct;
 }
 
 int main(int argc, char *argv[])
@@ -215,6 +224,11 @@ int main(int argc, char *argv[])
 	cache["inc"]["percent"]["2"] = 0.01;
 	cache["inc"]["percent"]["3"] = 0.01;
 	cache["inc"]["percent"]["4"] = 0.01;
+	cache["wave"]["0"] = 30;
+	cache["wave"]["1"] = 50;
+	cache["wave"]["2"] = 70;
+	cache["wave"]["3"] = 90;
+	cache["wave"]["4"] = 110;
 	srand(time(NULL));
 
 	signal(SIGINT, SIG_IGN);
