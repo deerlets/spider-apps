@@ -34,8 +34,8 @@ mqtt_cli.on('error', (err) => {
 
 var bf = new Bonfire();
 bf.connect(argv.address);
-bf.subscribe('point/update');
-bf.on('point/update', (content) => {
+bf.subscribe('tag/update');
+bf.on('tag/update', (content) => {
   if (!mqtt_cli.connected) return;
   try {
     const cnt = JSON.parse(content);

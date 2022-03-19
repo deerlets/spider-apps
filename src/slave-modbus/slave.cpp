@@ -55,7 +55,7 @@ static struct param_desc channel_desc[] = {
     INIT_PD_NONE(),
 };
 
-static struct param_desc point_desc[] = {
+static struct param_desc tag_desc[] = {
     INIT_PD_NUMBER("address", "地址", NULL, 0, 0, USHRT_MAX),
     INIT_PD_NUMBER("quantity", "数量", NULL, 1, 1, USHRT_MAX),
     INIT_PD_SELECT("function_code", "功能码", NULL,
@@ -71,7 +71,7 @@ static struct param_desc point_desc[] = {
 
 static struct slave_metadata emulator_slave_metadata = {
     .channel_desc = channel_desc,
-    .point_desc = point_desc,
+    .tag_desc = tag_desc,
 };
 
 static void on_slave_metadata(struct slave_metadata **meta)
@@ -160,7 +160,7 @@ static int strip_parenthesis(char *buf)
     return 0;
 }
 
-static int on_point_read(
+static int on_tag_read(
     const char *channel_id, const char *param, char *json_buf, size_t size)
 {
     auto chn_it = channels.find(channel_id);
@@ -286,7 +286,7 @@ static int on_point_read(
     return dump.size();
 }
 
-static int on_point_write(
+static int on_tag_write(
     const char *channel_id, const char *param, const char *json_buf)
 {
     return strlen(json_buf);
@@ -296,8 +296,8 @@ static struct slave_operations ops = {
     .slave_metadata = on_slave_metadata,
     .channel_create = on_channel_create,
     .channel_delete = on_channel_delete,
-    .point_read = on_point_read,
-    .point_write = on_point_write,
+    .tag_read = on_tag_read,
+    .tag_write = on_tag_write,
 };
 
 static void signal_handler(int sig)

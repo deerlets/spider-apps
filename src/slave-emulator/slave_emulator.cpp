@@ -30,14 +30,14 @@ static struct param_desc channel_desc[] = {
     INIT_PD_NONE(),
 };
 
-static struct param_desc point_desc[] = {
+static struct param_desc tag_desc[] = {
     INIT_PD_TEXT("jsonpath", "json路径", NULL, "", 0, 256),
     INIT_PD_NONE(),
 };
 
 static struct slave_metadata emulator_slave_metadata = {
     .channel_desc = channel_desc,
-    .point_desc = point_desc,
+    .tag_desc = tag_desc,
 };
 
 static void on_slave_metadata(struct slave_metadata **meta)
@@ -54,7 +54,7 @@ static void on_channel_delete(const char *id)
 {
 }
 
-static int on_point_read(
+static int on_tag_read(
     const char *channel_id, const char *param, char *json_buf, size_t size)
 {
     try {
@@ -72,7 +72,7 @@ static int on_point_read(
     }
 }
 
-static int on_point_write(
+static int on_tag_write(
     const char *channel_id, const char *param, const char *json_buf)
 {
     return strlen(json_buf);
@@ -82,8 +82,8 @@ static struct slave_operations ops = {
     .slave_metadata = on_slave_metadata,
     .channel_create = on_channel_create,
     .channel_delete = on_channel_delete,
-    .point_read = on_point_read,
-    .point_write = on_point_write,
+    .tag_read = on_tag_read,
+    .tag_write = on_tag_write,
 };
 
 static void signal_handler(int sig)
